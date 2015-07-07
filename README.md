@@ -4,6 +4,10 @@
 Best way to install is with Homebrew:
 `brew install shpotify`
 
+## Notifications
+Install terminal-notifier if you'd like desktop notifications as well
+`brew install terminal-notifier`
+
 ## Install a cronjob with something like this:
 
 ```bash

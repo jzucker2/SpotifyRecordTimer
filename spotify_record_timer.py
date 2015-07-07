@@ -8,6 +8,37 @@ import os
 # this must be a round number
 MINUTES_UNTIL_PAUSE = 25
 SPOTIFY_PATH = 'spotify'
+NOTIFIER_PATH = 'terminal-notifier'
+PUSH_ICON = 'push_icon.png'
+SPOTIFY_BUNDLE_ID = 'com.spotify.client'
+
+class PushNotifier(object):
+	"""docstring for PushNotifier"""
+	def __init__(self):
+		super(PushNotifier, self).__init__()
+	def is_notifier_installed(self):
+		result = subprocess.Popen(['which', NOTIFIER_PATH], stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()
+		if len(result[0]) > 0:
+			return True
+		else:
+			return False
+	def get_push_message(self):
+		return 'Stand up!'
+	def get_push_sound(self):
+		return 'default'
+	def get_push_group(self):
+		return 'SpotifyRecordPlayer'
+	def get_push_title(self):
+		return 'Spotify Record Player'
+	def get_push_app_icon(self):
+		current_directory = os.path.dirname(os.path.realpath(__file__))
+		return os.path.join(current_directory, PUSH_ICON)
+	def get_push_sender(self):
+		return SPOTIFY_BUNDLE_ID
+	def send_desktop_notification(self):
+		result = subprocess.Popen([NOTIFIER_PATH, '-group', self.get_push_group(), '-sound', self.get_push_sound(), '-title', self.get_push_title(), '-message', self.get_push_message(), '-appIcon', self.get_push_app_icon(), '-sender', self.get_push_sender()], stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()
+		return result
+
 
 class SpotifyHandler(object):
 	"""docstring for SpotifyHandler"""
@@ -103,10 +134,15 @@ def main():
 	if checker.should_pause():
 		if spotify.is_spotify_playing():
 			spotify.toggle_spotify_playing(False)
+			notifier = PushNotifier()
+			# only run if notifier is installed and found in path
+			if notifier.is_notifier_installed():
+				notifier.send_desktop_notification()
 			# if we toggle off, make sure to reset number of checks!
 			checker.reset_number_of_checks()
 	# don't forget to update number of checks afterwards
 	checker.update_number_of_checks()
+
 
 
 if __name__ == '__main__':
