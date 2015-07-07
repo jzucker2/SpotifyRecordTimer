@@ -7,13 +7,14 @@ import os
 
 # this must be a round number
 MINUTES_UNTIL_PAUSE = 25
+SPOTIFY_PATH = '/usr/local/bin/spotify'
 
 class SpotifyHandler(object):
 	"""docstring for SpotifyHandler"""
 	def __init__(self):
 		super(SpotifyHandler, self).__init__()
 	def poll_spotify(self):
-		return subprocess.check_output(['spotify', 'status'])
+		return subprocess.check_output([SPOTIFY_PATH, 'status'])
 
 	def is_spotify_playing(self):
 		result = self.poll_spotify()
@@ -24,17 +25,17 @@ class SpotifyHandler(object):
 		else:
 			raise Exception()
 	def is_command_line_installed(self):
-		result = subprocess.check_output(['which', 'spotify'])
-		if len(result) > 0:
+		result = subprocess.call(['which', 'spotify'])
+		if result == 0:
 			return True
 		else:
 			return False
 
 	def pause_spotify(self):
-		return subprocess.check_output(['spotify', 'pause'])
+		return subprocess.check_output([SPOTIFY_PATH, 'pause'])
 
 	def play_spotify(self):
-		return subprocess.check_output(['spotify', 'play'])
+		return subprocess.check_output([SPOTIFY_PATH, 'play'])
 
 	def toggle_spotify_playing(self, should_play):
 		if should_play:
