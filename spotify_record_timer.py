@@ -23,12 +23,18 @@ class SpotifyHandler(object):
 			return False
 		else:
 			raise Exception()
+	def is_command_line_installed(self):
+		result = subprocess.check_output(['which', 'spotify'])
+		if len(result) > 0:
+			return True
+		else:
+			return False
 
 	def pause_spotify(self):
-		return subprocess.call(['spotify', 'pause'])
+		return subprocess.check_output(['spotify', 'pause'])
 
 	def play_spotify(self):
-		return subprocess.call(['spotify', 'play'])
+		return subprocess.check_output(['spotify', 'play'])
 
 	def toggle_spotify_playing(self, should_play):
 		if should_play:
@@ -75,6 +81,10 @@ class TimeChecker(object):
 
 def main():
 	spotify = SpotifyHandler()
+	if not spotify.is_command_line_installed():
+		print 'Spotify is not installed or in crontab PATH'
+		print 'Install with "brew install shpotify"'
+		return
 	checker = TimeChecker()
 	# don't check or update number of checks if spotify is not playing
 	if not spotify.is_spotify_playing():
