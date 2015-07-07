@@ -38,9 +38,6 @@ class SpotifyHandler(object):
 
 class TimeChecker(object):
 	"""docstring for TimeChecker"""
-	def __init__(self):
-		super(TimeChecker, self).__init__()
-		self.current_time = time.time()
 	def get_number_of_checks_file(self):
 		current_directory = os.path.dirname(os.path.realpath(__file__))
 		return os.path.join(current_directory, 'number_of_checks.json')
@@ -48,6 +45,10 @@ class TimeChecker(object):
 		with open(self.get_number_of_checks_file()) as checks_file:
 			data = json.load(checks_file)
 			self.checks = data
+	def __init__(self):
+		super(TimeChecker, self).__init__()
+		self.current_time = time.time()
+		self.get_number_of_checks()
 	def update_number_of_checks(self):
 		current_number_of_checks = self.checks['checks']
 		updated_number_of_checks = current_number_of_checks
@@ -58,10 +59,14 @@ class TimeChecker(object):
 		with open(self.get_number_of_checks_file(), 'w') as checks_file:
 			checks = {'checks' : updated_number_of_checks, 'last_updated' : self.current_time}
 			json.dump(checks, checks_file)
+	def reset_number_of_checks(self):
+		with open(self.get_number_of_checks_file(), 'w') as checks_file:
+			checks = {'checks' : 0, 'last_updated' : self.checks['last_updated']}
+			json.dump(checks, checks_file)
 	def should_pause(self):
 		current_number_of_checks = self.checks['checks']
 		last_check_time = self.checks['last_updated']
-		if self.current_time - last_check_time > (MINUTES_UNTIL_PAUSE * 60):
+		if self.current_time - last_check_time >= (MINUTES_UNTIL_PAUSE * 60):
 			return True
 		elif current_number_of_checks == (MINUTES_UNTIL_PAUSE - 1):
 			return True
@@ -69,10 +74,13 @@ class TimeChecker(object):
 			return False
 
 def main():
+	spotify = SpotifyHandler()
 	checker = TimeChecker()
-	checker.get_number_of_checks()
+	# don't check or update number of checks if spotify is not playing
+	if not spotify.is_spotify_playing():
+		checker.reset_number_of_checks()
+		return
 	if checker.should_pause():
-		spotify = SpotifyHandler()
 		if spotify.is_spotify_playing():
 			spotify.toggle_spotify_playing(False)
 	# don't forget to update number of checks afterwards
