@@ -5,6 +5,7 @@ import json
 import time
 import os
 
+# this must be a round number
 MINUTES_UNTIL_PAUSE = 25
 
 class SpotifyHandler(object):
@@ -50,7 +51,7 @@ class TimeChecker(object):
 	def update_number_of_checks(self):
 		current_number_of_checks = self.checks['checks']
 		updated_number_of_checks = current_number_of_checks
-		if current_number_of_checks >= 24:
+		if current_number_of_checks >= (MINUTES_UNTIL_PAUSE - 1):
 			updated_number_of_checks = 0
 		else:
 			updated_number_of_checks += 1
@@ -60,9 +61,9 @@ class TimeChecker(object):
 	def should_pause(self):
 		current_number_of_checks = self.checks['checks']
 		last_check_time = self.checks['last_updated']
-		if self.current_time - last_check_time > (25*60):
+		if self.current_time - last_check_time > (MINUTES_UNTIL_PAUSE * 60):
 			return True
-		elif current_number_of_checks = 24:
+		elif current_number_of_checks == (MINUTES_UNTIL_PAUSE - 1):
 			return True
 		else:
 			return False
