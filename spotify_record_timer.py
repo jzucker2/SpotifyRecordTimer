@@ -51,6 +51,11 @@ class TimeChecker(object):
 	def get_number_of_checks_file(self):
 		current_directory = os.path.dirname(os.path.realpath(__file__))
 		return os.path.join(current_directory, 'number_of_checks.json')
+	def create_number_of_checks_file_if_needed(self):
+		if not os.path.exists(self.get_number_of_checks_file()):
+			with open(self.get_number_of_checks_file(), 'w') as checks_file:
+				checks = {'checks' : 0, 'last_updated' : self.current_time}
+				json.dump(checks, checks_file)
 	def get_number_of_checks(self):
 		with open(self.get_number_of_checks_file()) as checks_file:
 			data = json.load(checks_file)
@@ -58,6 +63,7 @@ class TimeChecker(object):
 	def __init__(self):
 		super(TimeChecker, self).__init__()
 		self.current_time = time.time()
+		self.create_number_of_checks_file_if_needed()
 		self.get_number_of_checks()
 	def update_number_of_checks(self):
 		current_number_of_checks = self.checks['checks']
