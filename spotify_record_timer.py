@@ -14,7 +14,7 @@ class SpotifyHandler(object):
 	def __init__(self):
 		super(SpotifyHandler, self).__init__()
 	def poll_spotify(self):
-		return subprocess.check_output([SPOTIFY_PATH, 'status'])
+		return subprocess.check_output(SPOTIFY_PATH + ' status', shell=True)
 
 	def is_spotify_playing(self):
 		result = self.poll_spotify()
@@ -25,17 +25,17 @@ class SpotifyHandler(object):
 		else:
 			raise Exception()
 	def is_command_line_installed(self):
-		result = subprocess.call(['which', 'spotify'])
+		result = subprocess.call('which spotify', shell=True)
 		if result == 0:
 			return True
 		else:
 			return False
 
 	def pause_spotify(self):
-		return subprocess.check_output([SPOTIFY_PATH, 'pause'])
+		return subprocess.check_output(SPOTIFY_PATH + ' pause', shell=True)
 
 	def play_spotify(self):
-		return subprocess.check_output([SPOTIFY_PATH, 'play'])
+		return subprocess.check_output(SPOTIFY_PATH + ' play', shell=True)
 
 	def toggle_spotify_playing(self, should_play):
 		if should_play:
