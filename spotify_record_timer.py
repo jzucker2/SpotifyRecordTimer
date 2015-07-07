@@ -68,7 +68,7 @@ class TimeChecker(object):
 			json.dump(checks, checks_file)
 	def reset_number_of_checks(self):
 		with open(self.get_number_of_checks_file(), 'w') as checks_file:
-			checks = {'checks' : 0, 'last_updated' : self.checks['last_updated']}
+			checks = {'checks' : 0, 'last_updated' : self.current_time}
 			json.dump(checks, checks_file)
 	def should_pause(self):
 		current_number_of_checks = self.checks['checks']
@@ -94,6 +94,8 @@ def main():
 	if checker.should_pause():
 		if spotify.is_spotify_playing():
 			spotify.toggle_spotify_playing(False)
+			# if we toggle off, make sure to reset number of checks!
+			checker.reset_number_of_checks()
 	# don't forget to update number of checks afterwards
 	checker.update_number_of_checks()
 
