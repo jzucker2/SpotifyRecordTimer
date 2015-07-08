@@ -35,8 +35,14 @@ class PushNotifier(object):
 		return os.path.join(current_directory, PUSH_ICON)
 	def get_push_sender(self):
 		return SPOTIFY_BUNDLE_ID
+	def get_execute_command(self):
+		return 'open -a /Applications/Spotify.app'
+	def get_full_notification_command(self):
+		return [NOTIFIER_PATH, '-group', self.get_push_group(), '-sound', self.get_push_sound(), '-title', self.get_push_title(), '-message', self.get_push_message(), '-appIcon', self.get_push_app_icon(), '-sender', self.get_push_sender(), '-execute', "'" + self.get_execute_command() + "'"]
+	def print_debug_notifier_command(self):
+		return ' '.join(self.get_full_notification_command())
 	def send_desktop_notification(self):
-		result = subprocess.Popen([NOTIFIER_PATH, '-group', self.get_push_group(), '-sound', self.get_push_sound(), '-title', self.get_push_title(), '-message', self.get_push_message(), '-appIcon', self.get_push_app_icon(), '-sender', self.get_push_sender()], stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()
+		result = subprocess.Popen(self.get_full_notification_command(), stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()
 		return result
 
 
