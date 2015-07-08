@@ -104,7 +104,7 @@ class TimeChecker(object):
 		self.current_time = time.time()
 		self.create_number_of_checks_file_if_needed()
 		self.get_number_of_checks()
-	def update_number_of_checks(self):
+	def update_check_time(self):
 		with open(self.get_number_of_checks_file(), 'w') as checks_file:
 			checks = {LAST_UPDATED_KEY : self.current_time}
 			json.dump(checks, checks_file)
@@ -122,19 +122,19 @@ def main():
 		print 'Install with "brew install shpotify"'
 		return
 	checker = TimeChecker()
-	# don't check or update number of checks if spotify is not playing
-	if not spotify.is_spotify_playing():
-		checker.update_number_of_checks()
-		return
-	if checker.should_pause():
-		if spotify.is_spotify_playing():
+
+	if spotify.is_spotify_playing():
+		if checker.should_pause():
 			spotify.toggle_spotify_playing(False)
 			notifier = PushNotifier()
 			# only run if notifier is installed and found in path
 			if notifier.is_notifier_installed():
 				notifier.send_desktop_notification()
-	# don't forget to update number of checks afterwards
-	checker.update_number_of_checks()
+			# don't forget to update number of checks afterwards
+			checker.update_check_time()
+	else:
+		# don't forget to update check time if spotify is not playing
+		checker.update_check_time()
 
 
 
