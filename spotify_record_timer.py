@@ -108,10 +108,6 @@ class TimeChecker(object):
 		with open(self.get_number_of_checks_file(), 'w') as checks_file:
 			checks = {LAST_UPDATED_KEY : self.current_time}
 			json.dump(checks, checks_file)
-	def reset_number_of_checks(self):
-		with open(self.get_number_of_checks_file(), 'w') as checks_file:
-			checks = {LAST_UPDATED_KEY : self.current_time}
-			json.dump(checks, checks_file)
 	def should_pause(self):
 		last_check_time = self.checks[LAST_UPDATED_KEY]
 		if self.current_time - last_check_time >= (MINUTES_UNTIL_PAUSE * 60):
@@ -128,7 +124,7 @@ def main():
 	checker = TimeChecker()
 	# don't check or update number of checks if spotify is not playing
 	if not spotify.is_spotify_playing():
-		checker.reset_number_of_checks()
+		checker.update_number_of_checks()
 		return
 	if checker.should_pause():
 		if spotify.is_spotify_playing():
@@ -137,8 +133,6 @@ def main():
 			# only run if notifier is installed and found in path
 			if notifier.is_notifier_installed():
 				notifier.send_desktop_notification()
-			# if we toggle off, make sure to reset number of checks!
-			checker.reset_number_of_checks()
 	# don't forget to update number of checks afterwards
 	checker.update_number_of_checks()
 
