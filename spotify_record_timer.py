@@ -11,6 +11,7 @@ SPOTIFY_PATH = 'spotify'
 NOTIFIER_PATH = 'terminal-notifier'
 PUSH_ICON = 'push_icon.png'
 SPOTIFY_BUNDLE_ID = 'com.spotify.client'
+LAST_UPDATED_KEY = 'last_updated'
 
 class PushNotifier(object):
 	"""docstring for PushNotifier"""
@@ -91,7 +92,7 @@ class TimeChecker(object):
 	def create_number_of_checks_file_if_needed(self):
 		if not os.path.exists(self.get_number_of_checks_file()):
 			with open(self.get_number_of_checks_file(), 'w') as checks_file:
-				checks = {'checks' : 0, 'last_updated' : self.current_time}
+				checks = {LAST_UPDATED_KEY : self.current_time}
 				json.dump(checks, checks_file)
 	def get_number_of_checks(self):
 		with open(self.get_number_of_checks_file()) as checks_file:
@@ -103,25 +104,16 @@ class TimeChecker(object):
 		self.create_number_of_checks_file_if_needed()
 		self.get_number_of_checks()
 	def update_number_of_checks(self):
-		current_number_of_checks = self.checks['checks']
-		updated_number_of_checks = current_number_of_checks
-		if current_number_of_checks >= (MINUTES_UNTIL_PAUSE - 1):
-			updated_number_of_checks = 0
-		else:
-			updated_number_of_checks += 1
 		with open(self.get_number_of_checks_file(), 'w') as checks_file:
-			checks = {'checks' : updated_number_of_checks, 'last_updated' : self.current_time}
+			checks = {LAST_UPDATED_KEY : self.current_time}
 			json.dump(checks, checks_file)
 	def reset_number_of_checks(self):
 		with open(self.get_number_of_checks_file(), 'w') as checks_file:
-			checks = {'checks' : 0, 'last_updated' : self.current_time}
+			checks = {LAST_UPDATED_KEY : self.current_time}
 			json.dump(checks, checks_file)
 	def should_pause(self):
-		current_number_of_checks = self.checks['checks']
-		last_check_time = self.checks['last_updated']
+		last_check_time = self.checks[LAST_UPDATED_KEY]
 		if self.current_time - last_check_time >= (MINUTES_UNTIL_PAUSE * 60):
-			return True
-		elif current_number_of_checks == (MINUTES_UNTIL_PAUSE - 1):
 			return True
 		else:
 			return False
