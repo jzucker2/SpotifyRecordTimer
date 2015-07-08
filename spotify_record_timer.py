@@ -12,6 +12,7 @@ NOTIFIER_PATH = 'terminal-notifier'
 PUSH_ICON = 'push_icon.png'
 SPOTIFY_BUNDLE_ID = 'com.spotify.client'
 LAST_UPDATED_KEY = 'last_updated'
+CHECKS_FILE = '.last_check.json'
 
 class PushNotifier(object):
 	"""docstring for PushNotifier"""
@@ -88,7 +89,7 @@ class TimeChecker(object):
 	"""docstring for TimeChecker"""
 	def get_number_of_checks_file(self):
 		current_directory = os.path.dirname(os.path.realpath(__file__))
-		return os.path.join(current_directory, 'number_of_checks.json')
+		return os.path.join(current_directory, CHECKS_FILE)
 	def create_number_of_checks_file_if_needed(self):
 		if not os.path.exists(self.get_number_of_checks_file()):
 			with open(self.get_number_of_checks_file(), 'w') as checks_file:

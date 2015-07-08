@@ -1,5 +1,5 @@
 # ignore our checking log
-number_of_checks.json
+.last_check.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
