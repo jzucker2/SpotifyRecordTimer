@@ -16,3 +16,12 @@ SHELL=/bin/sh
 PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/local/git/bin
 */1 * * * * python <path to repo>/SpotifyRecordTimer/spotify_record_timer.py
 ```
+
+## Feature Requests
+* Menu bar item like Dropbox
+* Support for other media players
+* Custom times
+* On/off switch
+* Time remaining
+* launchd integration
+* App Store bundling
