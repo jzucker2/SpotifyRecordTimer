@@ -25,3 +25,4 @@ PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/local/git/bi
 * Time remaining
 * launchd integration
 * App Store bundling
+* Windows support (possibly start with [this](https://commandlinemedia.codeplex.com/documentation))
