@@ -60,7 +60,7 @@ class SpotifyHandler(object):
 		result = self.poll_spotify()
 		if 'Spotify is currently playing.' in result:
 			return True
-		elif 'Spotify is currently paused.' in result:
+		elif 'Spotify is currently paused.' or 'Spotify is currently stopped.' in result:
 			return False
 		else:
 			raise Exception()
